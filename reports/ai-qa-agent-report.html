@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI QA Execution Report · https://www.wikipedia.org/</title>
+<style>
+:root{--bg:#f4f6fb;--panel:#ffffff;--panel-2:#f8fafd;--ink:#141b2d;--ink-2:#3b4558;--muted:#6b768a;--line:#e3e8f0;--blue:#3563e9;--blue-soft:#e9efff;--green:#13855b;--green-soft:#e4f6ee;--red:#c8364a;--red-soft:#fdebee;--amber:#a76b00;--amber-soft:#fff3d6;--purple:#6d4fd1;--purple-soft:#efeaff;--shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.06);--radius:16px;--mono:ui-monospace,"Cascadia Code",Consolas,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1220;--panel:#151b2c;--panel-2:#1a2135;--ink:#e8ecf5;--ink-2:#c3cad8;--muted:#8d97ab;--line:#283149;--blue:#7d9cff;--blue-soft:#1e2a4d;--green:#43c48f;--green-soft:#123326;--red:#ff7486;--red-soft:#3a1a22;--amber:#f2b84b;--amber-soft:#36290f;--purple:#a991ff;--purple-soft:#2a2346;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25)}}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:76px}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 "Segoe UI Variable","Segoe UI",Inter,system-ui,-apple-system,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--blue)}.mono{font-family:var(--mono);font-size:12px;word-break:break-all}.muted{color:var(--muted);font-size:12.5px}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.amber{color:var(--amber)}.purple{color:var(--purple)}
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--panel) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1360px;margin:auto;padding:10px 24px;display:flex;align-items:center;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;white-space:nowrap}.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--purple));display:grid;place-items:center;color:#fff;font-size:13px;font-weight:900}
+.topnav{display:flex;gap:4px;overflow-x:auto;flex:1}.topnav a{color:var(--ink-2);text-decoration:none;font-weight:600;font-size:13px;padding:7px 11px;border-radius:9px;white-space:nowrap}.topnav a:hover{background:var(--panel-2);color:var(--ink)}.topnav a b{background:var(--red-soft);color:var(--red);border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px}
+.shell{max-width:1360px;margin:auto;padding:24px}
+.hero{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;background:linear-gradient(135deg,#131b33 0%,#1f2f5c 55%,#33307a 100%);color:#fff;border-radius:22px;padding:30px 34px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-80px;top:-80px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(125,156,255,.35),transparent 70%)}
+.eyebrow{text-transform:uppercase;letter-spacing:1.6px;font-size:11px;font-weight:800;opacity:.72}.hero h1{margin:6px 0 6px;font-size:30px;letter-spacing:-.4px}.target{color:#c9d6ff;word-break:break-all;font-weight:600}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 12px;font-size:12px;color:#e2e8ff;white-space:nowrap}
+.score{display:flex;align-items:center;gap:20px;position:relative;z-index:1}
+.ring{width:132px;height:132px;border-radius:50%;background:conic-gradient(var(--green) calc(100.0 * 1%),rgba(255,255,255,.14) 0);display:grid;place-items:center}
+.ring-inner{width:104px;height:104px;border-radius:50%;background:#18224a;display:flex;flex-direction:column;align-items:center;justify-content:center}.ring-inner strong{font-size:27px;line-height:1}.ring-inner span{font-size:11px;opacity:.75;margin-top:4px}
+.status-badge{padding:9px 16px;border-radius:999px;font-weight:900;letter-spacing:.5px;white-space:nowrap;background:#dff8ec;color:#0f6b47}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:20px 0 14px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--line)}.kpi.k-pass:before{background:var(--green)}.kpi.k-fail:before{background:var(--red)}.kpi.k-nv:before{background:var(--amber)}.kpi.k-auto:before{background:var(--purple)}.kpi.k-rate:before{background:var(--blue)}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);font-weight:800}.kpi-value{font-size:30px;font-weight:850;margin-top:4px;letter-spacing:-.5px}
+.distribution{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow);margin-bottom:20px}
+.dist-bar{display:flex;height:12px;border-radius:999px;overflow:hidden;background:var(--panel-2)}.dist-bar span{display:block;height:100%}.dist-legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--ink-2)}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.bg-pass{background:var(--green)}.bg-fail{background:var(--red)}.bg-nv{background:var(--amber)}.bg-auto{background:var(--purple)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:20px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}.panel h2{font-size:18px;margin:0;letter-spacing:-.2px}.panel-subtitle{color:var(--muted);font-size:13px;margin:4px 0 16px}
+.count{background:var(--panel-2);border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.summary{display:grid;grid-template-columns:1.35fr .65fr;gap:20px}.summary .panel{margin-bottom:0}
+.executive p{margin:0;color:var(--ink-2);font-size:14.5px}.summary-line{display:flex;justify-content:space-between;margin:18px 0 8px;color:var(--muted);font-size:13px}
+.progress{height:10px;background:var(--panel-2);border-radius:999px;overflow:hidden}.progress>div{height:100%;background:var(--green);border-radius:999px}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}.fact{padding:12px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px}.fact .value{display:block;font-size:16px;font-weight:750;margin-top:3px;word-break:break-word}
+.label{font-size:10.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:800;display:block}
+.severity-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.sev-card{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel-2)}.sev-card strong{display:block;font-size:22px}.sev-critical strong{color:#a1172c}.sev-high strong{color:var(--red)}.sev-medium strong{color:var(--amber)}.sev-low strong{color:var(--blue)}
+.env{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.health-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.health-grid .panel{margin-bottom:20px}
+.category-row{padding:11px 0;border-bottom:1px solid var(--line)}.category-row:last-child{border:0}.category-top{display:flex;justify-content:space-between;font-weight:650}
+.category-bar,.chart-track{height:8px;background:var(--panel-2);border-radius:999px;margin:7px 0;overflow:hidden}.category-fill,.chart-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:999px}.category-meta{color:var(--muted);font-size:12px}
+.chart-row{margin:13px 0}.chart-label{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700}
+.ai-panel{background:linear-gradient(135deg,var(--purple-soft),var(--panel));border-color:color-mix(in srgb,var(--purple) 30%,var(--line))}.ai-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.ai-icon{width:32px;height:32px;border-radius:10px;background:var(--purple);color:#fff;display:grid;place-items:center;font-weight:900;font-size:12px}
+.ai-note{padding:14px;background:var(--panel);border:1px dashed color-mix(in srgb,var(--purple) 40%,var(--line));border-radius:12px;color:var(--ink-2);margin-top:12px}
+.defect-card{border:1px solid var(--line);border-left:4px solid var(--red);background:var(--panel);border-radius:14px;padding:16px 18px;margin:12px 0;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.defect-card.sev-medium{border-left-color:var(--amber)}.defect-card.sev-low{border-left-color:var(--blue)}.defect-card.auto{border-left-color:var(--amber)}
+.defect-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.defect-head strong{font-size:15px}.issue-id{font-family:var(--mono);font-size:11.5px;font-weight:800;color:var(--muted);margin-right:10px}
+.severity,.severity-mini,.pill{display:inline-block;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:800;white-space:nowrap;letter-spacing:.2px}
+.severity{background:var(--amber-soft);color:var(--amber)}.severity.high,.severity-mini.high{background:var(--red-soft);color:var(--red)}.severity.medium,.severity-mini.medium{background:var(--amber-soft);color:var(--amber)}.severity.low,.severity-mini.low{background:var(--blue-soft);color:var(--blue)}.severity.critical,.severity-mini.critical{background:#f9d5db;color:#8d1224}
+.defect-grid,.detail-grid{display:grid;grid-template-columns:200px 1fr;gap:10px 18px;margin-top:14px}.defect-grid>div,.detail-grid>div{display:contents}.defect-grid>div>.label,.detail-grid>div>.label{padding-top:2px}
+.evidence summary{cursor:pointer;color:var(--blue);font-weight:700;margin-top:12px}.evidence img,.evidence-link img{max-width:100%;border:1px solid var(--line);border-radius:12px;margin-top:12px;display:block}.evidence-link{display:block;max-width:760px}.evidence-link img{max-height:440px;object-fit:contain;object-position:left top}
+.image-check-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px;padding:12px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px}.image-check-summary>div{display:flex;flex-direction:column;gap:2px}.image-check-summary strong{font-size:18px}
+.empty-state{text-align:center;padding:30px;color:var(--muted);display:flex;flex-direction:column;gap:6px;align-items:center}.empty-state strong{color:var(--ink);font-size:15px}.empty-icon{width:46px;height:46px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-size:22px;font-weight:900}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.toolbar input,.toolbar select{border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:var(--panel-2);color:var(--ink);font:inherit}.toolbar input{min-width:300px;flex:1}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:separate;border-spacing:0}th{position:sticky;top:0;text-align:left;background:var(--panel-2);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.7px;padding:11px 12px;border-bottom:1px solid var(--line);z-index:1}td{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
+.test-group .test-row:hover{background:var(--panel-2)}.index{color:var(--muted);width:44px}
+.pill.pass{background:var(--green-soft);color:var(--green)}.pill.fail{background:var(--red-soft);color:var(--red)}.pill.not-verified{background:var(--amber-soft);color:var(--amber)}.pill.automation-error{background:var(--purple-soft);color:var(--purple)}.pill.not-executed{background:var(--panel-2);color:var(--muted)}
+.expand-btn{border:1px solid var(--line);background:var(--panel);color:var(--blue);border-radius:9px;padding:6px 11px;cursor:pointer;font-size:12px;font-weight:700}.expand-btn:hover{background:var(--blue-soft)}
+.detail-row{display:none}.test-group.open .detail-row{display:table-row}.detail-content{background:var(--panel-2);border-left:3px solid var(--blue);padding:16px;border-radius:0 0 10px 10px}
+.validation-details{margin-top:16px}.validation-heading{font-weight:800;margin-bottom:8px}.validation-table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}.validation-table th{position:static}.validation-table th,.validation-table td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:12px;text-align:left}.validation-table tr:last-child td{border-bottom:0}.validation-table tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--panel-2) 60%,transparent)}
+.observations{margin:10px 0 0;padding-left:18px;color:var(--ink-2);font-size:12.5px}
+details>summary{cursor:pointer}.coverage-skipped summary{color:var(--ink-2);margin-top:14px}
+.footer{text-align:center;color:var(--muted);font-size:12px;padding:6px 0 34px}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.summary,.health-grid{grid-template-columns:1fr}.summary .panel{margin-bottom:20px}}
+@media(max-width:760px){.shell{padding:14px}.hero{grid-template-columns:1fr;padding:24px}.score{justify-content:flex-start}.kpis{grid-template-columns:repeat(2,1fr)}.facts,.severity-grid{grid-template-columns:1fr 1fr}.defect-grid,.detail-grid{grid-template-columns:1fr}.toolbar input{min-width:100%}.brand span{display:none}.image-check-summary{grid-template-columns:1fr 1fr}}
+@media print{.topbar,.toolbar,.expand-btn{display:none}body{background:#fff}.panel,.kpi,.distribution{box-shadow:none}.detail-row{display:table-row}.hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<nav class="topbar"><div class="topbar-inner"><div class="brand"><div class="logo">QA</div><span>AI QA Agent</span></div><div class="topnav"><a href="#summary">Summary</a><a href="#defects">Defects</a><a href="#issues">Verification</a><a href="#not-tested">Not tested</a><a href="#tests">All checks</a><a href="#meta">Run info</a></div></div></nav>
+<main class="shell">
+<header class="hero" id="summary">
+  <div>
+    <div class="eyebrow">Automated Web Quality Engineering</div>
+    <h1>AI QA Execution Report</h1>
+    <div class="target">https://www.wikipedia.org/</div>
+    <div class="chips"><span class="chip">Generated 10/27/2026, 10:12:50 PM</span><span class="chip">Duration 55 sec</span><span class="chip">Chromium 153.0.8010.12</span><span class="chip">1280 × 720</span></div>
+  </div>
+  <div class="score">
+    <div class="ring" title="Pass rate"><div class="ring-inner"><strong>100%</strong><span>pass rate</span></div></div>
+    <div class="status-badge">✓ PASS</div>
+  </div>
+</header>
+<section class="kpis">
+<div class="kpi"><div class="kpi-label">Total Tests</div><div class="kpi-value">18</div></div>
+<div class="kpi k-pass"><div class="kpi-label">Passed</div><div class="kpi-value green">18</div><div class="muted">incl. 1 form validation</div></div>
+<div class="kpi k-fail"><div class="kpi-label">Failed</div><div class="kpi-value red">0</div></div>
+<div class="kpi k-nv"><div class="kpi-label">Not Verified</div><div class="kpi-value amber">0</div></div>
+<div class="kpi k-auto"><div class="kpi-label">Automation Errors</div><div class="kpi-value purple">0</div></div>
+<div class="kpi k-rate"><div class="kpi-label">Pass Rate</div><div class="kpi-value blue">100.0%</div></div>
+</section>
+<section class="distribution" aria-label="Outcome distribution">
+  <div class="dist-bar"><span class="bg-pass" style="width:100.00%"></span></div>
+  <div class="dist-legend"><span><i class="dot bg-pass"></i>Passed 18</span><span><i class="dot bg-fail"></i>Failed 0</span><span><i class="dot bg-nv"></i>Not verified 0</span><span><i class="dot bg-auto"></i>Automation errors 0</span></div>
+</section>
+<section class="summary">
+<div class="panel executive"><div class="panel-head"><h2>Executive QA Summary</h2></div><p>All checks passed. 18 check(s): 18 passed (including 1 form validation), 0 failed, 0 not verified, 0 automation error(s).</p><div class="summary-line"><span>Resolved checks (pass or fail)</span><strong>18/18</strong></div><div class="progress"><div style="width:100.0%"></div></div><div class="facts"><div class="fact"><span class="label">Page title</span><span class="value">Wikipedia</span></div><div class="fact"><span class="label">Links discovered</span><span class="value">100 <span class="muted">(90 hidden)</span></span></div><div class="fact"><span class="label">Forms discovered</span><span class="value">1</span></div></div></div>
+<div class="panel"><div class="panel-head"><h2>Defect Severity</h2></div><div class="panel-subtitle">Confirmed failures by impact</div><div class="severity-grid"><div class="sev-card sev-critical"><span class="label">Critical</span><strong>0</strong></div><div class="sev-card sev-high"><span class="label">High</span><strong>0</strong></div><div class="sev-card sev-medium"><span class="label">Medium</span><strong>0</strong></div><div class="sev-card sev-low"><span class="label">Low</span><strong>0</strong></div></div><div class="env"><span class="label">Environment health</span><div style="margin-top:6px" class="green"><strong>Clean</strong></div><div class="category-meta" style="margin-top:4px">Console errors: 0 · Network failures: 0</div></div></div>
+</section>
+<div style="height:20px"></div>
+<section class="panel" id="defects"><div class="panel-head"><h2>Defects & Evidence</h2></div><div class="panel-subtitle">Confirmed application failures. Checks that point at the same broken URL or image are grouped into one defect.</div><div class="empty-state"><div class="empty-icon">✓</div><strong>No confirmed defects detected</strong><span>All generated checks passed.</span></div></section>
+
+<section class="health-grid">
+<div class="panel"><div class="panel-head"><h2>Category Health</h2></div><div class="panel-subtitle">Pass rate by test category</div><div class="category-row">
+      <div class="category-top"><strong>Page Load</strong><span>100%</span></div>
+      <div class="category-bar"><div class="category-fill" style="width:100%"></div></div>
+      <div class="category-meta">1 pass · 0 fail · 0 not verified · 0 automation error</div>
+    </div><div class="category-row">
+      <div class="category-top"><strong>Link</strong><span>100%</span></div>
+      <div class="category-bar"><div class="category-fill" style="width:100%"></div></div>
+      <div class="category-meta">10 pass · 0 fail · 0 not verified · 0 automation error</div>
+    </div><div class="category-row">
+      <div class="category-top"><strong>Button</strong><span>100%</span></div>
+      <div class="category-bar"><div class="category-fill" style="width:100%"></div></div>
+      <div class="category-meta">3 pass · 0 fail · 0 not verified · 0 automation error</div>
+    </div><div class="category-row">
+      <div class="category-top"><strong>Form Validation</strong><span>100%</span></div>
+      <div class="category-bar"><div class="category-fill" style="width:100%"></div></div>
+      <div class="category-meta">1 pass · 0 fail · 0 not verified · 0 automation error</div>
+    </div><div class="category-row">
+      <div class="category-top"><strong>Input</strong><span>100%</span></div>
+      <div class="category-bar"><div class="category-fill" style="width:100%"></div></div>
+      <div class="category-meta">2 pass · 0 fail · 0 not verified · 0 automation error</div>
+    </div><div class="category-row">
+      <div class="category-top"><strong>Broken Image</strong><span>100%</span></div>
+      <div class="category-bar"><div class="category-fill" style="width:100%"></div></div>
+      <div class="category-meta">1 pass · 0 fail · 0 not verified · 0 automation error</div>
+    </div></div>
+<div class="panel"><div class="panel-head"><h2>Category Chart</h2></div><div class="panel-subtitle">Visual health overview</div><div class="chart-row"><div class="chart-label"><span>Page Load</span><b>100%</b></div><div class="chart-track"><div class="chart-fill" style="width:100%"></div></div></div><div class="chart-row"><div class="chart-label"><span>Link</span><b>100%</b></div><div class="chart-track"><div class="chart-fill" style="width:100%"></div></div></div><div class="chart-row"><div class="chart-label"><span>Button</span><b>100%</b></div><div class="chart-track"><div class="chart-fill" style="width:100%"></div></div></div><div class="chart-row"><div class="chart-label"><span>Form Validation</span><b>100%</b></div><div class="chart-track"><div class="chart-fill" style="width:100%"></div></div></div><div class="chart-row"><div class="chart-label"><span>Input</span><b>100%</b></div><div class="chart-track"><div class="chart-fill" style="width:100%"></div></div></div><div class="chart-row"><div class="chart-label"><span>Broken Image</span><b>100%</b></div><div class="chart-track"><div class="chart-fill" style="width:100%"></div></div></div></div>
+</section>
+<section class="panel ai-panel"><div class="ai-title"><div class="ai-icon">AI</div><h2 style="margin:0">AI Analysis</h2><span class="pill not-executed">Claude integration pending</span></div><div class="ai-note">All checks passed. 18 check(s): 18 passed (including 1 form validation), 0 failed, 0 not verified, 0 automation error(s).<br><br><strong>Planned Claude capabilities:</strong> root-cause analysis, risk prioritisation and recommended next actions.</div></section>
+<section class="panel" id="issues">
+<div class="panel-head"><h2>Automation & Verification Issues</h2></div>
+<div class="panel-subtitle">These are not confirmed application defects. They indicate that the current automation could not reliably verify the intended behavior.</div>
+<div class="empty-state"><div class="empty-icon">✓</div><strong>No unresolved verification issues</strong><span>All generated checks produced a resolved outcome.</span></div>
+
+</section>
+<section class="panel" id="not-tested"><div class="panel-head"><h2>Not Tested by Design</h2><span class="count">93</span></div><div class="panel-subtitle">Elements that were discovered but deliberately not turned into separate tests, and why. Safety: 0 form(s) submitted · 0 script submit attempt(s) cancelled · 1 state-changing request(s) blocked.</div><div class="table-wrap"><table class="validation-table"><thead><tr><th>#</th><th>Kind</th><th>Element</th><th>Reason</th><th>Where</th></tr></thead><tbody><tr><td>1</td><td>link</td><td><strong>العربية</strong><div class="mono muted">https://ar.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>2</td><td>link</td><td><strong>Deutsch</strong><div class="mono muted">https://de.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>3</td><td>link</td><td><strong>English</strong><div class="mono muted">https://en.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>4</td><td>link</td><td><strong>Español</strong><div class="mono muted">https://es.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>5</td><td>link</td><td><strong>فارسی</strong><div class="mono muted">https://fa.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>6</td><td>link</td><td><strong>Français</strong><div class="mono muted">https://fr.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>7</td><td>link</td><td><strong>Italiano</strong><div class="mono muted">https://it.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>8</td><td>link</td><td><strong>مصرى</strong><div class="mono muted">https://arz.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>9</td><td>link</td><td><strong>Nederlands</strong><div class="mono muted">https://nl.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>10</td><td>link</td><td><strong>日本語</strong><div class="mono muted">https://ja.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>11</td><td>link</td><td><strong>Polski</strong><div class="mono muted">https://pl.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>12</td><td>link</td><td><strong>Português</strong><div class="mono muted">https://pt.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>13</td><td>link</td><td><strong>Sinugboanong Binisaya</strong><div class="mono muted">https://ceb.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>14</td><td>link</td><td><strong>Svenska</strong><div class="mono muted">https://sv.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>15</td><td>link</td><td><strong>Українська</strong><div class="mono muted">https://uk.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>16</td><td>link</td><td><strong>Tiếng Việt</strong><div class="mono muted">https://vi.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>17</td><td>link</td><td><strong>Winaray</strong><div class="mono muted">https://war.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>18</td><td>link</td><td><strong>中文</strong><div class="mono muted">https://zh.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>19</td><td>link</td><td><strong>Русский</strong><div class="mono muted">https://ru.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>20</td><td>link</td><td><strong>Afrikaans</strong><div class="mono muted">https://af.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>21</td><td>link</td><td><strong>Shqip</strong><div class="mono muted">https://sq.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>22</td><td>link</td><td><strong>Asturianu</strong><div class="mono muted">https://ast.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>23</td><td>link</td><td><strong>Azərbaycanca</strong><div class="mono muted">https://az.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>24</td><td>link</td><td><strong>Български</strong><div class="mono muted">https://bg.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>25</td><td>link</td><td><strong>閩南語 / Bân-lâm-gú</strong><div class="mono muted">https://zh-min-nan.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>26</td><td>link</td><td><strong>বাংলা</strong><div class="mono muted">https://bn.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>27</td><td>link</td><td><strong>Беларуская</strong><div class="mono muted">https://be.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>28</td><td>link</td><td><strong>Català</strong><div class="mono muted">https://ca.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>29</td><td>link</td><td><strong>Čeština</strong><div class="mono muted">https://cs.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>30</td><td>link</td><td><strong>Cymraeg</strong><div class="mono muted">https://cy.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>31</td><td>link</td><td><strong>Dansk</strong><div class="mono muted">https://da.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>32</td><td>link</td><td><strong>Eesti</strong><div class="mono muted">https://et.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>33</td><td>link</td><td><strong>Ελληνικά</strong><div class="mono muted">https://el.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>34</td><td>link</td><td><strong>Esperanto</strong><div class="mono muted">https://eo.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>35</td><td>link</td><td><strong>Euskara</strong><div class="mono muted">https://eu.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>36</td><td>link</td><td><strong>Galego</strong><div class="mono muted">https://gl.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>37</td><td>link</td><td><strong>한국어</strong><div class="mono muted">https://ko.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>38</td><td>link</td><td><strong>Hausa</strong><div class="mono muted">https://ha.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>39</td><td>link</td><td><strong>Հայերեն</strong><div class="mono muted">https://hy.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>40</td><td>link</td><td><strong>हिन्दी</strong><div class="mono muted">https://hi.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>41</td><td>link</td><td><strong>Hrvatski</strong><div class="mono muted">https://hr.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>42</td><td>link</td><td><strong>Bahasa Indonesia</strong><div class="mono muted">https://id.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>43</td><td>link</td><td><strong>עברית</strong><div class="mono muted">https://he.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>44</td><td>link</td><td><strong>ქართული</strong><div class="mono muted">https://ka.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>45</td><td>link</td><td><strong>Ladin</strong><div class="mono muted">https://lld.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>46</td><td>link</td><td><strong>Latina</strong><div class="mono muted">https://la.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>47</td><td>link</td><td><strong>Latviešu</strong><div class="mono muted">https://lv.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>48</td><td>link</td><td><strong>Lietuvių</strong><div class="mono muted">https://lt.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>49</td><td>link</td><td><strong>Magyar</strong><div class="mono muted">https://hu.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>50</td><td>link</td><td><strong>Македонски</strong><div class="mono muted">https://mk.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>51</td><td>link</td><td><strong>Malagasy</strong><div class="mono muted">https://mg.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>52</td><td>link</td><td><strong>मराठी</strong><div class="mono muted">https://mr.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>53</td><td>link</td><td><strong>Bahasa Melayu</strong><div class="mono muted">https://ms.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>54</td><td>link</td><td><strong>Bahaso Minangkabau</strong><div class="mono muted">https://min.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>55</td><td>link</td><td><strong>မြန်မာဘာသာ</strong><div class="mono muted">https://my.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>56</td><td>link</td><td><strong>bokmål</strong><div class="mono muted">https://no.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>57</td><td>link</td><td><strong>nynorsk</strong><div class="mono muted">https://nn.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>58</td><td>link</td><td><strong>Нохчийн</strong><div class="mono muted">https://ce.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>59</td><td>link</td><td><strong>Oʻzbekcha / Ўзбекча</strong><div class="mono muted">https://uz.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>60</td><td>link</td><td><strong>Қазақша / Qazaqşa / قازاقشا</strong><div class="mono muted">https://kk.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>61</td><td>link</td><td><strong>Română</strong><div class="mono muted">https://ro.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>62</td><td>link</td><td><strong>Simple English</strong><div class="mono muted">https://simple.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>63</td><td>link</td><td><strong>Slovenčina</strong><div class="mono muted">https://sk.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>64</td><td>link</td><td><strong>Slovenščina</strong><div class="mono muted">https://sl.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>65</td><td>link</td><td><strong>Српски / Srpski</strong><div class="mono muted">https://sr.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>66</td><td>link</td><td><strong>Srpskohrvatski / Српскохрватски</strong><div class="mono muted">https://sh.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>67</td><td>link</td><td><strong>Suomi</strong><div class="mono muted">https://fi.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>68</td><td>link</td><td><strong>Kiswahili</strong><div class="mono muted">https://sw.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>69</td><td>link</td><td><strong>தமிழ்</strong><div class="mono muted">https://ta.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>70</td><td>link</td><td><strong>Татарча / Tatarça</strong><div class="mono muted">https://tt.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>71</td><td>link</td><td><strong>తెలుగు</strong><div class="mono muted">https://te.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>72</td><td>link</td><td><strong>ภาษาไทย</strong><div class="mono muted">https://th.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>73</td><td>link</td><td><strong>Тоҷикӣ</strong><div class="mono muted">https://tg.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>74</td><td>link</td><td><strong>تۆرکجه</strong><div class="mono muted">https://azb.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>75</td><td>link</td><td><strong>Türkçe</strong><div class="mono muted">https://tr.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>76</td><td>link</td><td><strong>اردو</strong><div class="mono muted">https://ur.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>77</td><td>link</td><td><strong>粵語</strong><div class="mono muted">https://zh-yue.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>78</td><td>link</td><td><strong>Bahsa Acèh</strong><div class="mono muted">https://ace.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>79</td><td>link</td><td><strong>Alemannisch</strong><div class="mono muted">https://als.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>80</td><td>link</td><td><strong>አማርኛ</strong><div class="mono muted">https://am.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>81</td><td>link</td><td><strong>Aragonés</strong><div class="mono muted">https://an.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>82</td><td>link</td><td><strong>Արեւմտահայերէն</strong><div class="mono muted">https://hyw.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>83</td><td>link</td><td><strong>Bahasa Hulontalo</strong><div class="mono muted">https://gor.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>84</td><td>link</td><td><strong>Basa Bali</strong><div class="mono muted">https://ban.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>85</td><td>link</td><td><strong>Bahasa Banjar</strong><div class="mono muted">https://bjn.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>86</td><td>link</td><td><strong>Basa Banyumasan</strong><div class="mono muted">https://map-bms.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>87</td><td>link</td><td><strong>Башҡортса</strong><div class="mono muted">https://ba.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>88</td><td>link</td><td><strong>Беларуская (тарашкевіца)</strong><div class="mono muted">https://be-tarask.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>89</td><td>link</td><td><strong>Bikol Central</strong><div class="mono muted">https://bcl.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>90</td><td>link</td><td><strong>বিষ্ণুপ্রিয়া মণিপুরী</strong><div class="mono muted">https://bpy.wikipedia.org/</div></td><td>Hidden link to another website (visibility:hidden); not checked. Hidden links within this site are checked.</td><td>/</td></tr><tr><td>91</td><td>button</td><td><strong>Search</strong></td><td>Form submit control; covered by the form validation test for form 1. Never clicked.</td><td>/</td></tr><tr><td>92</td><td>button</td><td><strong>Unnamed button</strong></td><td>Hidden at the tested viewport (inside a container with display:none); not actionable by a user.</td><td>/</td></tr><tr><td>93</td><td>button</td><td><strong>Close</strong></td><td>Hidden at the tested viewport (inside a container with display:none); not actionable by a user.</td><td>/</td></tr></tbody></table></div></section>
+<section class="panel" id="tests"><div class="panel-head"><h2>Test Execution Details</h2><span class="count">18 check(s)</span></div><div class="toolbar"><input id="search" placeholder="Search test cases or details…"><select id="status"><option value="ALL">All outcomes</option><option value="PASS">PASS</option><option value="FAIL">FAIL</option><option value="NOT_VERIFIED">NOT VERIFIED</option><option value="AUTOMATION_ERROR">AUTOMATION ERROR</option></select><select id="type"><option value="ALL">All types</option><option value="page_load">Page Load</option><option value="link">Link</option><option value="button">Button</option><option value="form_submit">Form Validation</option><option value="input">Input</option><option value="broken_image">Broken Image</option></select></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Test Case</th><th>Outcome</th><th>Severity</th><th>Details</th></tr></thead><tbody class="test-group" data-status="PASS" data-type="page_load" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">1</td>
+        <td><strong>Page loads - Wikipedia</strong><div class="muted">Page Load</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Page loaded successfully (HTTP 200): Wikipedia</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">—</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="link" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">2</td>
+        <td><strong>Link works - English 7,254,000+ articles</strong><div class="muted">Link</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Link navigation succeeded with HTTP 200. URL: https://en.wikipedia.org/wiki/Main_Page.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://en.wikipedia.org/wiki/Main_Page</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by href+label</span></div>
+          
+          <div><span class="label">Safety guard</span><span>1 state-changing request(s) blocked</span></div>
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="link" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">3</td>
+        <td><strong>Link works - 日本語 1,523,000+ 記事</strong><div class="muted">Link</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Link navigation succeeded with HTTP 200. URL: https://ja.wikipedia.org/wiki/%E3%83%A1%E3%82%A4%E3%83%B3%E3%83%9A%E3%83%BC%E3%82%B8. Note: an overlay covering the element (e.g. a cookie banner) was hidden to reach it: div.overlay-banner-main.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://ja.wikipedia.org/wiki/%E3%83%A1%E3%82%A4%E3%83%B3%E3%83%9A%E3%83%BC%E3%82%B8</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by href+label</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="link" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">4</td>
+        <td><strong>Link works - Deutsch 3.159.000+ Artikel</strong><div class="muted">Link</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Link navigation succeeded with HTTP 200. URL: https://de.wikipedia.org/wiki/Wikipedia:Hauptseite.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://de.wikipedia.org/wiki/Wikipedia:Hauptseite</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by href+label</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="link" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">5</td>
+        <td><strong>Link works - Français 2 785 000+ articles</strong><div class="muted">Link</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Link navigation succeeded with HTTP 200. URL: https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal. Note: an overlay covering the element (e.g. a cookie banner) was hidden to reach it: div.overlay-banner-main.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by href+label</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="link" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">6</td>
+        <td><strong>Link works - Русский 2 123 000+ статей</strong><div class="muted">Link</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Link navigation succeeded with HTTP 200. URL: https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by href+label</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="link" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">7</td>
+        <td><strong>Link works - Español 2.144.000+ artículos</strong><div class="muted">Link</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Link navigation succeeded with HTTP 200. URL: https://es.wikipedia.org/wiki/Wikipedia:Portada. Note: an overlay covering the element (e.g. a cookie banner) was hidden to reach it: div.overlay-banner-main.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://es.wikipedia.org/wiki/Wikipedia:Portada</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by href+label</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="link" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">8</td>
+        <td><strong>Link works - Italiano 1.991.000+ voci</strong><div class="muted">Link</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Link navigation succeeded with HTTP 200. URL: https://it.wikipedia.org/wiki/Pagina_principale.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://it.wikipedia.org/wiki/Pagina_principale</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by href+label</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="link" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">9</td>
+        <td><strong>Link works - 中文 1,561,000+ 条目 / 條目</strong><div class="muted">Link</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Link navigation succeeded with HTTP 200. URL: https://zh.wikipedia.org/wiki/Wikipedia:%E9%A6%96%E9%A1%B5. Note: an overlay covering the element (e.g. a cookie banner) was hidden to reach it: div.overlay-banner-main.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://zh.wikipedia.org/wiki/Wikipedia:%E9%A6%96%E9%A1%B5</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by href+label</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="link" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">10</td>
+        <td><strong>Link works - Português 1.185.000+ artigos</strong><div class="muted">Link</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Link navigation succeeded with HTTP 200. URL: https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://pt.wikipedia.org/wiki/Wikip%C3%A9dia:P%C3%A1gina_principal</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by href+label</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="link" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">11</td>
+        <td><strong>Link works - Polski 1 711 000+ haseł</strong><div class="muted">Link</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Link navigation succeeded with HTTP 200. URL: https://pl.wikipedia.org/wiki/Wikipedia:Strona_g%C5%82%C3%B3wna. Note: an overlay covering the element (e.g. a cookie banner) was hidden to reach it: div.overlay-banner-main.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://pl.wikipedia.org/wiki/Wikipedia:Strona_g%C5%82%C3%B3wna</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by href+label</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="button" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">12</td>
+        <td><strong>Button works - Read Wikipedia in your language</strong><div class="muted">Button</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Button click produced observable behaviour: page content changed, expanded/collapsed state changed, visible content size changed.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by discovery-selector</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="button" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">13</td>
+        <td><strong>Button works - minimize</strong><div class="muted">Button</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Button click produced observable behaviour: page content changed, button state changed, visible content size changed.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by discovery-selector</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="button" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">14</td>
+        <td><strong>Button works - COLLAPSE</strong><div class="muted">Button</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Button click produced observable behaviour: page content changed, button state changed, visible content size changed.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by discovery-selector</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="form_submit" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">15</td>
+        <td><strong>Form validation - Search</strong><div class="muted">Form Validation</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Client-side validation verified without submitting. Fields tested: 1; required fields rejected when empty: 0/0; invalid formats rejected: 0/0; all 1 tested field(s) accepted realistic values; submit control &quot;Search&quot; is visible and enabled (not clicked). The form was not submitted; backend processing and server-side validation were not tested. Notes: &quot;en&quot; not tested: hidden optional field (opacity:0); likely a honeypot, left empty.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          
+          
+          
+        </div>
+        <div class="validation-details">
+          <div class="validation-heading">Field-level results (form was not submitted)</div>
+          <table class="validation-table">
+            <thead>
+              <tr><th>#</th><th>Field</th><th>Type</th><th>Required</th><th>Empty rejected</th><th>Invalid format rejected</th><th>Test value</th><th>Valid value accepted</th><th>Message</th></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>1</td>
+                  <td><strong>Search Wikipedia</strong></td>
+                  <td>search</td>
+                  <td>No</td>
+                  <td>n/a</td>
+                  <td>n/a</td>
+                  <td class="mono">test</td>
+                  <td class="green">Yes</td>
+                  <td></td>
+                </tr>
+              
+            </tbody>
+          </table>
+          <ul class="observations"><li>&quot;en&quot; not tested: hidden optional field (opacity:0); likely a honeypot, left empty.</li></ul>
+        </div>
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="input" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">16</td>
+        <td><strong>Input exists - amount</strong><div class="muted">Input</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Input exists and is visible: amount (editable).</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">—</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by [name=&quot;amount&quot;]</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="input" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">17</td>
+        <td><strong>Input exists - monthly</strong><div class="muted">Input</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>Input exists and is visible: monthly (editable).</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">—</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          <div><span class="label">Element</span><span>Visible · located by [name=&quot;monthly&quot;]</span></div>
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody><tbody class="test-group" data-status="PASS" data-type="broken_image" data-viewport="desktop">
+      <tr class="test-row">
+        <td class="index">18</td>
+        <td><strong>Images load correctly - 7 image(s)</strong><div class="muted">Broken Image</div></td>
+        <td><span class="pill pass">PASS</span></td>
+        <td>—</td>
+        <td><button class="expand-btn" type="button" onclick="toggleTest(this)">Details</button></td>
+      </tr>
+      <tr class="detail-row"><td colspan="5"><div class="detail-content">
+        <div class="detail-grid">
+          <div><span class="label">Result</span><span>All 7 image(s) load correctly: 1 rendered on the page. 6 image(s) were not rendered in place (lazy-loaded or hidden) but load and decode correctly.</span></div>
+          <div><span class="label">Before URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">After URL</span><span class="mono">https://www.wikipedia.org/</span></div>
+          <div><span class="label">Evidence</span><span>No screenshot captured</span></div>
+          
+          
+          
+          
+        </div>
+        
+        
+      </div></td></tr>
+    </tbody></table></div></section>
+<section class="panel" id="meta"><div class="panel-head"><h2>Environment & Run Metadata</h2></div><div class="facts"><div class="fact"><span class="label">Target</span><span class="value mono">https://www.wikipedia.org/</span></div><div class="fact"><span class="label">Browser</span><span class="value">Chromium 153.0.8010.12</span></div><div class="fact"><span class="label">Viewport</span><span class="value">1280 × 720</span></div><div class="fact"><span class="label">Started</span><span class="value">10/27/2026, 10:11:55 PM</span></div><div class="fact"><span class="label">Finished</span><span class="value">10/27/2026, 10:12:50 PM</span></div><div class="fact"><span class="label">Run duration</span><span class="value">55 sec</span></div></div></section>
+<div class="footer">AI QA Agent · Evidence-based Playwright web QA · Report generated locally · Forms are never submitted</div>
+</main>
+<script>
+const groups=[...document.querySelectorAll('.test-group')];
+const search=document.querySelector('#search');
+const status=document.querySelector('#status');
+const type=document.querySelector('#type');
+const viewportSelect=document.querySelector('#viewport');
+function filter(){const q=search.value.toLowerCase(),s=status.value,t=type.value,v=viewportSelect?viewportSelect.value:'ALL';groups.forEach(g=>{const text=g.innerText.toLowerCase();const okQ=!q||text.includes(q),okS=s==='ALL'||g.dataset.status===s,okT=t==='ALL'||g.dataset.type===t,okV=v==='ALL'||g.dataset.viewport===v;g.style.display=okQ&&okS&&okT&&okV?'':'none'})}
+if(viewportSelect)viewportSelect.addEventListener('change',filter);
+function toggleTest(btn){const group=btn.closest('.test-group');group.classList.toggle('open');btn.textContent=group.classList.contains('open')?'Hide':'Details'}
+search.addEventListener('input',filter);status.addEventListener('change',filter);type.addEventListener('change',filter);
+</script><script>const SHOTS={};document.querySelectorAll('[data-shot]').forEach(el=>{const uri=SHOTS[el.dataset.shot];if(!uri)return;if(el.tagName==='IMG')el.src=uri;else el.href=uri;});</script></body></html>
